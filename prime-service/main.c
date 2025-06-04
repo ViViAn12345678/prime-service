@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
+#include <math.h>
 #include <pthread.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -36,15 +38,21 @@ int is_prime(unsigned long long n) {
 
 // Función para generar el primer número primo con 'digits' dígitos
 unsigned long long generate_prime(int digits) {
-    unsigned long long start = 1;
-    for (int i = 1; i < digits; i++) start *= 10;
-    unsigned long long end = start * 10 - 1;
+    unsigned long long min = 1;
+    for (int i = 1; i < digits; i++) min *= 10;
+    unsigned long long max = min * 10 - 1;
 
-    for (unsigned long long num = start; num <= end; num++) {
-        if (is_prime(num)) return num;
+    srand(time(NULL) ^ pthread_self());  // Semilla aleatoria distinta por hilo
+
+    for (int attempts = 0; attempts < 100000; attempts++) {
+        unsigned long long candidate = min + rand() % (max - min + 1);
+        if (is_prime(candidate)) {
+            return candidate;
+        }
     }
-    return 0; // No encontrado (muy raro)
+    return 0; // No encontrado
 }
+
 
 void *prime_thread(void *arg) {
     task_t *task = (task_t *)arg;
