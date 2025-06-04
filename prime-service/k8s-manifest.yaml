@@ -5,6 +5,6 @@ metadata:
 spec:
   containers:
   - name: prime-container
-    image: prime-service
+    image: viviviri/prime-service:latest
     imagePullPolicy: Never
     command: ["./prime_service", "generate", "5"]
