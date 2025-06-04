@@ -6,5 +6,5 @@ spec:
   containers:
   - name: prime-container
     image: prime-service
-    imagePullPolicy: IfNotPresent
+    imagePullPolicy: Never
     command: ["./prime_service", "generate", "5"]
