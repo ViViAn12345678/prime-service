@@ -42,20 +42,17 @@ unsigned long long generate_prime(int digits) {
     for (int i = 1; i < digits; i++) start *= 10;
     unsigned long long end = start * 10 - 1;
 
-    // Semilla solo una vez
-    static int seeded = 0;
-    if (!seeded) {
-        srand(time(NULL) ^ pthread_self());
-        seeded = 1;
-    }
+    // Sembrar aleatorio en cada hilo
+    srand(time(NULL) ^ (uintptr_t)pthread_self());
 
     for (int attempts = 0; attempts < 1000000; attempts++) {
         unsigned long long candidate = start + rand() % (end - start + 1);
         if (is_prime(candidate)) return candidate;
     }
 
-    return 0; // No encontrado tras varios intentos
+    return 0;
 }
+
 
 
 void *prime_thread(void *arg) {
