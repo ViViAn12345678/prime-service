@@ -38,19 +38,23 @@ int is_prime(unsigned long long n) {
 
 // Función para generar el primer número primo con 'digits' dígitos
 unsigned long long generate_prime(int digits) {
-    unsigned long long min = 1;
-    for (int i = 1; i < digits; i++) min *= 10;
-    unsigned long long max = min * 10 - 1;
+    unsigned long long start = 1;
+    for (int i = 1; i < digits; i++) start *= 10;
+    unsigned long long end = start * 10 - 1;
 
-    srand(time(NULL) ^ pthread_self());  // Semilla aleatoria distinta por hilo
-
-    for (int attempts = 0; attempts < 100000; attempts++) {
-        unsigned long long candidate = min + rand() % (max - min + 1);
-        if (is_prime(candidate)) {
-            return candidate;
-        }
+    // Semilla solo una vez
+    static int seeded = 0;
+    if (!seeded) {
+        srand(time(NULL) ^ pthread_self());
+        seeded = 1;
     }
-    return 0; // No encontrado
+
+    for (int attempts = 0; attempts < 1000000; attempts++) {
+        unsigned long long candidate = start + rand() % (end - start + 1);
+        if (is_prime(candidate)) return candidate;
+    }
+
+    return 0; // No encontrado tras varios intentos
 }
 
 
