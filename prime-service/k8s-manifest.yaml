@@ -1,10 +1,33 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: prime-service
 spec:
-  containers:
-  - name: prime-container
-    image: viviviri/prime-service:latest
-    imagePullPolicy: Never
-    command: ["./prime_service", "generate", "5"]
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prime-service
+  template:
+    metadata:
+      labels:
+        app: prime-service
+    spec:
+      containers:
+      - name: prime-container
+        image: viviviri/prime-service:latest
+        ports:
+        - containerPort: 9090
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prime-service
+spec:
+  selector:
+    app: prime-service
+  ports:
+  - protocol: TCP
+    port: 9090
+    targetPort: 9090
+  type: ClusterIP

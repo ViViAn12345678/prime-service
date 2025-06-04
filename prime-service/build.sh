@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t prime-service .
+gcc -pthread -o prime_service main.c

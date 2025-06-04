@@ -2,7 +2,10 @@ FROM gcc:latest
 
 WORKDIR /app
 
-COPY src/ ./src/
-RUN gcc src/main.c -o prime_service -lpthread
+COPY main.c .
 
-ENTRYPOINT ["./prime_service"]
+RUN gcc -pthread -o prime_service main.c
+
+EXPOSE 9090
+
+CMD ["./prime_service"]
